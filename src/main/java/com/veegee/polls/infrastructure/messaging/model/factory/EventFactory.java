@@ -1,6 +1,7 @@
 package com.veegee.polls.infrastructure.messaging.model.factory;
 
 import com.veegee.polls.business.model.Poll;
+import com.veegee.polls.business.model.PollResult;
 import com.veegee.polls.infrastructure.messaging.model.Event;
 import com.veegee.polls.utils.LocalDateTimeProvider;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +15,9 @@ public class EventFactory {
 
     private final LocalDateTimeProvider dateTimeProvider;
 
-    public Event newEvent(Poll poll) {
+    public Event newEvent(PollResult result) {
         return Event.builder()
-                    .payload(poll)
+                    .payload(result)
                     .type(POLL_CLOSED)
                     .sentAt(dateTimeProvider.now())
                 .build();

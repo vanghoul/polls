@@ -12,22 +12,16 @@ spring:
     data:
         mongodb:
             host: localhost
-            port: 27017
-            database: localpolls
-    rabbitmq:
-        host: 127.0.0.1
-        port: 5672
-        username: guest
-        password: guest
-
+            port: 0
+            database: itpolls
 server.port: 8080
 
 cpf-check-host: https://user-info.herokuapp.com/
 
 jobs:
     closePolls:
-        delayMillis: '60000'
+        delayMillis: '1000'
         lock:
             id: 'closePollsLock'
-            min: '30s'
-            max: '2m'
+            min: '0s'
+            max: '0s'

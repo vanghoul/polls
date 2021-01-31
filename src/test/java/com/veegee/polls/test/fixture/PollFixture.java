@@ -23,6 +23,14 @@ public class PollFixture {
                 .build();
     }
 
+    public static Poll newBeforeInsertPoll(String title) {
+        return Poll.builder()
+                    .title(title)
+                    .status(NEW)
+                    .voters(emptyList())
+                .build();
+    }
+
     public static Poll recentlyOpenPoll() {
         return Poll.builder()
                     .id(DEFAULT_ID)
@@ -41,6 +49,17 @@ public class PollFixture {
                     .status(OPEN)
                     .start(LocalDateTime.now())
                     .end(LocalDateTime.now().plusHours(1L))
+                    .voters(asList(voters))
+                .build();
+    }
+
+    public static Poll closingSoonPoll(String title, Voter... voters) {
+        return Poll.builder()
+                    .id(DEFAULT_ID)
+                    .title(title)
+                    .status(OPEN)
+                    .start(LocalDateTime.now().minusHours(1L))
+                    .end(LocalDateTime.now())
                     .voters(asList(voters))
                 .build();
     }

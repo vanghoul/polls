@@ -3,8 +3,13 @@ package com.veegee.polls.business;
 import com.veegee.polls.api.request.CreatePollRequest;
 import com.veegee.polls.api.request.UpdatePollRequest;
 import com.veegee.polls.api.request.VoteRequest;
+import com.veegee.polls.business.exception.InvalidNextStatusException;
 import com.veegee.polls.business.exception.NotFoundException;
+import com.veegee.polls.business.exception.NotImplementedException;
+import com.veegee.polls.business.model.PollResult;
 import com.veegee.polls.business.model.Voter;
+import com.veegee.polls.business.model.enumeration.StatusType;
+import com.veegee.polls.business.model.factory.ResultFactory;
 import com.veegee.polls.business.model.factory.VoterFactory;
 import com.veegee.polls.business.model.factory.PollFactory;
 import com.veegee.polls.business.validation.VoteValidator;
@@ -17,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.veegee.polls.business.model.enumeration.StatusType.OPEN;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +31,7 @@ public class PollService {
     private final PollRepository repository;
     private final PollFactory pollFactory;
     private final VoterFactory voterFactory;
+    private final ResultFactory resultFactory;
     private final VoteValidator voteValidator;
     private final LocalDateTimeProvider dateTimeProvider;
 
@@ -40,9 +47,16 @@ public class PollService {
     public Poll update(String id, UpdatePollRequest request) {
         return repository.findById(id)
                 .map(existingPoll -> {
-                    Poll openPoll = pollFactory.openPoll(existingPoll, request);
-                    repository.save(openPoll);
-                    return openPoll;
+                    switch (StatusType.valueOf(request.getState())) {
+                        case NEW:
+                            throw new InvalidNextStatusException();
+                        case OPEN:
+                            Poll openPoll = pollFactory.openPoll(existingPoll, request);
+                            repository.save(openPoll);
+                            return openPoll;
+                        default:
+                            throw new NotImplementedException();
+                    }
                 }).orElseThrow(() -> new NotFoundException(id));
     }
 
@@ -58,13 +72,22 @@ public class PollService {
                 }).orElseThrow(() -> new NotFoundException(id));
     }
 
-    public List<Poll> closePolls() {
+//    public List<Poll> closePolls() {
+//        List<Poll> closedPolls = getPollsReadyToBeClosed();
+//        closedPolls.stream().map(pollToClose -> {
+//            pollToClose = pollFactory.closePoll(pollToClose);
+//            return repository.save(pollToClose);
+//        });
+//        return closedPolls;
+//    }
+
+    public List<PollResult> closePolls() {
         List<Poll> closedPolls = getPollsReadyToBeClosed();
-        closedPolls.forEach(pollToClose -> {
-            pollToClose = pollFactory.closePoll(pollToClose);
-            repository.save(pollToClose);
-        });
-        return closedPolls;
+        return closedPolls.stream()
+                .map(pollFactory::closePoll)
+                .map(repository::save)
+                .map(resultFactory::generate)
+                .collect(toList());
     }
 
     private List<Poll> getPollsReadyToBeClosed() {
