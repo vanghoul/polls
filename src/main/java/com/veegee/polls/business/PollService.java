@@ -17,6 +17,7 @@ import com.veegee.polls.infrastructure.repository.PollRepository;
 import com.veegee.polls.business.model.Poll;
 import com.veegee.polls.utils.LocalDateTimeProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,8 +25,9 @@ import java.util.List;
 import static com.veegee.polls.business.model.enumeration.StatusType.OPEN;
 import static java.util.stream.Collectors.toList;
 
-@Service
 @RequiredArgsConstructor
+@Service
+@Slf4j
 public class PollService {
 
     private final PollRepository repository;
@@ -41,6 +43,7 @@ public class PollService {
 
     public Poll create(CreatePollRequest request) {
         Poll newPoll = pollFactory.newPoll(request);
+        log.debug("Saving in database: {}", newPoll);
         return repository.insert(newPoll);
     }
 
@@ -52,6 +55,7 @@ public class PollService {
                             throw new InvalidNextStatusException();
                         case OPEN:
                             Poll openPoll = pollFactory.openPoll(existingPoll, request);
+                            log.debug("Opening Poll in database: {}", openPoll);
                             repository.save(openPoll);
                             return openPoll;
                         default:
@@ -64,27 +68,22 @@ public class PollService {
         return repository.findById(id)
                 .map(existingPoll -> {
                     Voter voter = voterFactory.newVoter(request);
+                    log.debug("Validating vote: {}", voter);
                     if (voteValidator.isVoteValid(existingPoll, voter)) {
+                        log.debug("Vote {} is valid", voter);
                         existingPoll.addVoter(voter);
+                        log.debug("Casting vote for Poll with Id {} to database: {}", existingPoll.getId(), voter);
                         repository.save(existingPoll);
                     }
                     return existingPoll;
                 }).orElseThrow(() -> new NotFoundException(id));
     }
 
-//    public List<Poll> closePolls() {
-//        List<Poll> closedPolls = getPollsReadyToBeClosed();
-//        closedPolls.stream().map(pollToClose -> {
-//            pollToClose = pollFactory.closePoll(pollToClose);
-//            return repository.save(pollToClose);
-//        });
-//        return closedPolls;
-//    }
-
     public List<PollResult> closePolls() {
         List<Poll> closedPolls = getPollsReadyToBeClosed();
         return closedPolls.stream()
                 .map(pollFactory::closePoll)
+                .peek(poll -> log.debug("Closing Poll in database: {}", poll))
                 .map(repository::save)
                 .map(resultFactory::generate)
                 .collect(toList());

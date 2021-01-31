@@ -7,6 +7,7 @@ import com.veegee.polls.business.PollService;
 import com.veegee.polls.business.model.Poll;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -23,6 +24,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RestController
 @RequestMapping("/api/v1/polls")
 @RequiredArgsConstructor
+@Slf4j
 public class PollController {
 
     private final PollService service;
@@ -34,14 +36,17 @@ public class PollController {
 
     @PostMapping
     public ResponseEntity<Poll> create(@Valid @RequestBody CreatePollRequest request) {
+        log.info("Received request to create Poll {}", request);
         return ResponseEntity.ok(service.create(request));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Object> update(@PathVariable String id, @Valid @RequestBody UpdatePollRequest request) {
         try {
+            log.info("Received request to make the following changes to Poll with Id {}: {}", id, request);
             return ResponseEntity.ok(service.update(id, request));
         } catch (Exception e) {
+            log.error("Exception when making changes to Poll with Id {}:", id, e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -49,8 +54,10 @@ public class PollController {
     @PostMapping("/{id}/vote/")
     public ResponseEntity<Object> vote(@PathVariable String id, @Valid @RequestBody VoteRequest request) {
         try {
+            log.info("Received vote to Poll with Id {}: {}", id, request);
             return ResponseEntity.ok(service.vote(id, request));
         } catch (Exception e) {
+            log.error("Exception when casting vote to Poll with Id {}:", id, e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
