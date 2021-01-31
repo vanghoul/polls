@@ -27,6 +27,9 @@ dependencies {
 	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
 	implementation 'org.springframework.boot:spring-boot-starter-validation:2.4.2'
 
+	implementation 'net.javacrumbs.shedlock:shedlock-spring:4.20.0'
+	implementation 'net.javacrumbs.shedlock:shedlock-provider-mongo:4.20.0'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
