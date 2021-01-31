@@ -4,3 +4,5 @@ spring:
             host: localhost
             port: 27017
             database: localpolls
+
+cpf-check-host: https://user-info.herokuapp.com/

@@ -24,4 +24,11 @@ public class Poll {
     private final LocalDateTime end;
     private final List<Voter> voters;
 
+    public void addVoter(Voter voter) {
+        voters.add(voter);
+    }
+
+    public boolean containsVoter(Voter voter) {
+        return voters.stream().anyMatch(voters -> voters.getCpf().equalsIgnoreCase(voter.getCpf()));
+    }
 }

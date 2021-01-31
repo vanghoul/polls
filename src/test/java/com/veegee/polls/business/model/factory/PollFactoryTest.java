@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 
 import static com.veegee.polls.business.model.enumeration.StatusType.NEW;
 import static com.veegee.polls.business.model.enumeration.StatusType.OPEN;
-import static com.veegee.polls.test.fixture.PollFixture.defaultNewPoll;
-import static com.veegee.polls.test.fixture.PollFixture.defaultRecentlyOpenPoll;
+import static com.veegee.polls.test.fixture.PollFixture.newPoll;
+import static com.veegee.polls.test.fixture.PollFixture.recentlyOpenPoll;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
@@ -63,7 +63,7 @@ public class PollFactoryTest {
     @Test
     public void must_change_poll_to_OPEN_status_when_opening_poll() {
         //given
-        Poll existingPoll = defaultNewPoll();
+        Poll existingPoll = newPoll();
         String newStatus = "OPEN";
         Long duration = Duration.ofHours(1L).toMillis();
         UpdatePollRequest request = new UpdatePollRequest(newStatus, duration);
@@ -81,7 +81,7 @@ public class PollFactoryTest {
     @Test
     public void must_calculate_poll_ending_when_opening_poll() {
         //given
-        Poll existingPoll = defaultNewPoll();
+        Poll existingPoll = newPoll();
         String newStatus = "OPEN";
         Long duration = Duration.ofHours(1L).toMillis();
         UpdatePollRequest request = new UpdatePollRequest(newStatus, duration);
@@ -101,7 +101,7 @@ public class PollFactoryTest {
     @Test
     public void must_calculate_poll_ending_in_one_minute_when_opening_poll_without_duration() {
         //given
-        Poll existingPoll = defaultNewPoll();
+        Poll existingPoll = newPoll();
         String newStatus = "OPEN";
         UpdatePollRequest request = new UpdatePollRequest(newStatus);
         LocalDateTime start = LocalDateTime.now();
@@ -120,7 +120,7 @@ public class PollFactoryTest {
     @Test
     public void must_throw_invalid_next_status_exception_when_opening_poll_not_in_NEW_status() {
         //given
-        Poll existingPoll = defaultRecentlyOpenPoll();
+        Poll existingPoll = recentlyOpenPoll();
         String newStatus = "OPEN";
         UpdatePollRequest request = new UpdatePollRequest(newStatus);
 
