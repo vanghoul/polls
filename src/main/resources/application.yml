@@ -1,9 +1,40 @@
 spring:
+    cloud:
+        stream:
+            default:
+                binder: rabbit
+                contentType: application/json
+            bindings:
+                poll_closed_output:
+                    destination: users
+                    producer:
+                        requiredGroups: usersGroup
+                poll_closed_input:
+                    destination: users
+                    group: usersGroup
+                    consumer:
+                        maxAttempts: 3
+                        backOffInitialInterval: 500
+                        backOffMaxInterval: 1000
+                        backOffMultiplier: 2.0
+                pollClosedInput-in-0:
+                    destination: users
+                    group: usersGroup
+                    consumer:
+                        maxAttempts: 3
+                        backOffInitialInterval: 500
+                        backOffMaxInterval: 1000
+                        backOffMultiplier: 2.0
     data:
         mongodb:
             host: localhost
             port: 27017
             database: localpolls
+    rabbitmq:
+        host: 127.0.0.1
+        port: 5672
+        username: guest
+        password: guest
 
 server.port: 8080
 

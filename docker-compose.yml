@@ -4,3 +4,14 @@ services:
     container_name: "mongodb"
     ports:
       - 27017:27017
+  rabbitmq:
+    image: library/rabbitmq:3.8.9-management-alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
+    container_name: rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
