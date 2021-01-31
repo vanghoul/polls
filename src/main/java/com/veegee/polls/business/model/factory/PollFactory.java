@@ -80,7 +80,7 @@ public class PollFactory {
 
     private boolean calculateResult(Poll closedPoll) {
         long yes = closedPoll.getVoters().stream().filter(Voter::isVote).count();
-        long no = closedPoll.getVoters().stream().filter(vote -> !vote.isVote()).count();
+        long no = (closedPoll.getVoters().size() - yes);
         return yes > no;
     }
 }
