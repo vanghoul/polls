@@ -14,10 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static com.veegee.polls.business.model.enumeration.StatusType.NEW;
-import static com.veegee.polls.business.model.enumeration.StatusType.OPEN;
-import static com.veegee.polls.test.fixture.PollFixture.newPoll;
-import static com.veegee.polls.test.fixture.PollFixture.recentlyOpenPoll;
+import static com.veegee.polls.business.model.enumeration.StatusType.*;
+import static com.veegee.polls.test.fixture.PollFixture.*;
+import static com.veegee.polls.test.fixture.VoterFixture.defaultVoter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
@@ -126,6 +125,52 @@ public class PollFactoryTest {
 
         //when-then
         assertThatThrownBy(() -> factory.openPoll(existingPoll, request))
+                .isInstanceOf(InvalidNextStatusException.class);
+    }
+
+    @Test
+    public void must_change_poll_to_CLOSED_status_when_closing_poll() {
+        //given
+        Poll existingPoll = recentlyOpenPoll();
+
+        //when
+        Poll closedPoll = factory.closePoll(existingPoll);
+
+        //then
+        assertThat(closedPoll.getStatus()).isEqualTo(CLOSED);
+    }
+
+    @Test
+    public void must_calculate_result_to_true_when_closing_passing_poll() {
+        //given
+        Poll poll = openPoll(defaultVoter(true), defaultVoter(true), defaultVoter(false));
+
+        //when
+        Poll passingPoll = factory.closePoll(poll);
+
+        //then
+        assertThat(passingPoll.getResult()).isTrue();
+    }
+
+    @Test
+    public void must_calculate_result_to_false_when_closing_failing_poll() {
+        //given
+        Poll poll = openPoll(defaultVoter(true), defaultVoter(false), defaultVoter(false));
+
+        //when
+        Poll failingPoll = factory.closePoll(poll);
+
+        //then
+        assertThat(failingPoll.getResult()).isFalse();
+    }
+
+    @Test
+    public void must_throw_invalid_next_status_exception_when_closing_poll_not_in_OPEN_status() {
+        //given
+        Poll existingPoll = newPoll();
+
+        //when-then
+        assertThatThrownBy(() -> factory.closePoll(existingPoll))
                 .isInstanceOf(InvalidNextStatusException.class);
     }
 }

@@ -23,6 +23,7 @@ public class Poll {
     private final LocalDateTime start;
     private final LocalDateTime end;
     private final List<Voter> voters;
+    private final Boolean result;
 
     public void addVoter(Voter voter) {
         voters.add(voter);

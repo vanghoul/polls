@@ -7,11 +7,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.client.HttpClientErrorException;
 
 import static com.veegee.polls.test.fixture.CpfCheckFixture.invalidCpfResponse;
 import static com.veegee.polls.test.fixture.CpfCheckFixture.validCpfResponse;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @ExtendWith(MockitoExtension.class)
 public class CpfValidatorTest {
@@ -63,12 +66,26 @@ public class CpfValidatorTest {
         String aCpf = "123456543210000000";
 
         given(client.checkCpf(aCpf))
-                .willThrow(new RuntimeException("An Exception!!"));
+                .willThrow(new HttpClientErrorException(BAD_REQUEST));
 
         //when
         boolean isValid = service.isCpfValid(aCpf);
 
         //then
         assertThat(isValid).isFalse();
+    }
+
+    @Test
+    public void must_throw_exception_when_cpf_check_is_broken() {
+        //given
+        String aCpf = "123456543210000000";
+        Exception expectedException = new RuntimeException("An Exception!");
+
+        given(client.checkCpf(aCpf))
+                .willThrow(expectedException);
+
+        //when-then
+        assertThatThrownBy(() -> service.isCpfValid(aCpf))
+                .isEqualTo(expectedException);
     }
 }

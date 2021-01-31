@@ -10,10 +10,13 @@ import com.veegee.polls.business.model.factory.PollFactory;
 import com.veegee.polls.business.validation.VoteValidator;
 import com.veegee.polls.infrastructure.repository.PollRepository;
 import com.veegee.polls.business.model.Poll;
+import com.veegee.polls.utils.LocalDateTimeProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.veegee.polls.business.model.enumeration.StatusType.OPEN;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +26,7 @@ public class PollService {
     private final PollFactory pollFactory;
     private final VoterFactory voterFactory;
     private final VoteValidator voteValidator;
+    private final LocalDateTimeProvider dateTimeProvider;
 
     public List<Poll> findAll() {
         return repository.findAll();
@@ -52,5 +56,18 @@ public class PollService {
                     }
                     return existingPoll;
                 }).orElseThrow(() -> new NotFoundException(id));
+    }
+
+    public List<Poll> closePolls() {
+        List<Poll> closedPolls = getPollsReadyToBeClosed();
+        closedPolls.forEach(pollToClose -> {
+            pollToClose = pollFactory.closePoll(pollToClose);
+            repository.save(pollToClose);
+        });
+        return closedPolls;
+    }
+
+    private List<Poll> getPollsReadyToBeClosed() {
+        return repository.findAllByStatusAndEndBefore(OPEN, dateTimeProvider.now());
     }
 }
