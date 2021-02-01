@@ -18,8 +18,8 @@ public class VoteValidator {
 
     public boolean isVoteValid(Poll poll, Voter voter) {
         if (!isPollOpen(poll)) throw new NotOpenException(poll.getId());
-        if (!isVoterValid(voter.getCpf())) throw new InvalidVoterException(voter.getCpf());
         if (hasAlreadyVoted(poll, voter)) throw new AlreadyVotedException(voter.getCpf(), poll.getId());
+        if (!isVoterCpfValid(voter.getCpf())) throw new InvalidVoterException(voter.getCpf());
 
         return true;
     }
@@ -28,11 +28,11 @@ public class VoteValidator {
         return poll.getStatus() == OPEN;
     }
 
-    private boolean isVoterValid(String cpf) {
-        return cpfValidator.isCpfValid(cpf);
-    }
-
     private boolean hasAlreadyVoted(Poll poll, Voter voter) {
         return poll.containsVoter(voter);
+    }
+
+    private boolean isVoterCpfValid(String cpf) {
+        return cpfValidator.isCpfValid(cpf);
     }
 }
