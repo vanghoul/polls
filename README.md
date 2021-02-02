@@ -8,8 +8,20 @@ The scenario for this API is helping a local community organize their Polling Se
 We will be reviewing the actual business rules for these sessions further down, along with the technical
 decisions on how to tackle them.
 
-But first, lets talk about the technological requirements and how to start the application in case you 
-decide to clone this repository into your machine!
+As this got rather large, lets begin with a Table of Contents to help navigation!
+
+## Table of Contents  
+
+[Starting Polls API](https://github.com/vanghoul/polls#starting-polls-api)  
+[Rules of Polling](https://github.com/vanghoul/polls#rules-of-polling)  
+[The Design of the Solution](https://github.com/vanghoul/polls#the-design-of-the-solution)  
+[The Domain Model](https://github.com/vanghoul/polls#the-domain-model)  
+[The Restful API](https://github.com/vanghoul/polls#the-restful-api)  
+[The MongoDB Repository](https://github.com/vanghoul/polls#the-mongodb-repository)  
+[The Scheduled Task](https://github.com/vanghoul/polls#the-scheduled-task)  
+[The Message Broker](https://github.com/vanghoul/polls#the-message-broker)  
+[Performance Considerations](https://github.com/vanghoul/polls#performance-considerations)  
+[Final Words](https://github.com/vanghoul/polls#final-words)
 
 ## Starting Polls API
 
@@ -26,16 +38,21 @@ The requirements to run the application are:
 The easiest way to start the Polls API is:
 
  - Clone the repository and go to the root folder 
- - Use Docker Compose to boot the external dependencies (MongoDB, RabbitMQ):
-   > docker-compose up
- - Use Gradle to boot the application:
-   - If you prefer (or want to debug the application), you can launch the app through an IDE.
-   > gradlew bootRun
- - To interact with the API itself you can either use a tool such as Postman or Insomnia, or access
-   SwaggerUI if you don't have such a tool installed!
-   > http://localhost:8080/
+ - Use Docker Compose to boot the external dependencies (MongoDB, RabbitMQ):  
+   
+   `docker-compose up`
 
-## The Rules of Polling
+ - Use Gradle to boot the application:
+   - If you prefer (or want to debug the application), you can launch the app through an IDE.  
+     
+   `gradlew bootRun`
+   
+ - To interact with the API itself you can either use a tool such as Postman or Insomnia, or access
+   it through SwaggerUI!  
+   
+   `http://localhost:8080`
+
+## Rules of Polling
 
 These are the business requirements for the Polling Session application:
 
@@ -81,7 +98,7 @@ easy to use and get the job done pretty well:
 
 Before discussing the solution in greater detail, I would like to put forward the Poll model.
 
-```
+```json
 {
    "id": "6015f2b60a14b8165114340e",
    "title": "Are all ravens black?",
@@ -92,7 +109,7 @@ Before discussing the solution in greater detail, I would like to put forward th
        {
           "cpf": "12334854777",
           "vote": true
-       },
+       }
     ],
    "result": null
 }
