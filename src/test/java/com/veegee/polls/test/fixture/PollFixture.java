@@ -5,7 +5,8 @@ import com.veegee.polls.business.model.Voter;
 
 import java.time.LocalDateTime;
 
-import static com.veegee.polls.business.model.enumeration.StatusType.*;
+import static com.veegee.polls.business.model.enumeration.StatusType.NEW;
+import static com.veegee.polls.business.model.enumeration.StatusType.OPEN;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 

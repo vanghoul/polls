@@ -6,7 +6,7 @@ import com.veegee.polls.business.model.PollResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import static com.veegee.polls.business.model.enumeration.StatusType.*;
+import static com.veegee.polls.business.model.enumeration.StatusType.CLOSED;
 
 @Component
 @RequiredArgsConstructor

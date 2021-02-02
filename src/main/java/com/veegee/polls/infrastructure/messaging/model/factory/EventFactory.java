@@ -1,6 +1,5 @@
 package com.veegee.polls.infrastructure.messaging.model.factory;
 
-import com.veegee.polls.business.model.Poll;
 import com.veegee.polls.business.model.PollResult;
 import com.veegee.polls.infrastructure.messaging.model.Event;
 import com.veegee.polls.utils.LocalDateTimeProvider;

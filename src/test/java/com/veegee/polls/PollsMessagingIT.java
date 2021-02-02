@@ -22,7 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.time.Duration;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
-import static com.veegee.polls.business.model.enumeration.StatusType.*;
+import static com.veegee.polls.business.model.enumeration.StatusType.CLOSED;
 import static com.veegee.polls.infrastructure.messaging.enumeration.EventType.POLL_CLOSED;
 import static com.veegee.polls.test.fixture.PollFixture.closingSoonPoll;
 import static com.veegee.polls.test.fixture.VoterFixture.randomVoter;
