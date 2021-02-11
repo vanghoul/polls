@@ -76,9 +76,6 @@ public class VoteValidatorTest {
         Voter voter = defaultVoter(true);
         Poll invalidStatusPoll = openPoll(voter);
 
-        given(cpfValidator.isCpfValid(voter.getCpf()))
-                .willReturn(true);
-
         //when-then
         assertThatThrownBy(() -> validator.isVoteValid(invalidStatusPoll, voter))
                 .isInstanceOf(AlreadyVotedException.class);

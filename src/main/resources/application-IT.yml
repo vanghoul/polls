@@ -20,7 +20,7 @@ cpf-check-host: https://user-info.herokuapp.com/
 
 jobs:
     closePolls:
-        delayMillis: '1000'
+        delayMillis: '100'
         lock:
             id: 'closePollsLock'
             min: '0s'
